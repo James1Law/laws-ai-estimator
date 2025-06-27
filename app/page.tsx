@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send, Ship, Loader2 } from "lucide-react"
+import ReactMarkdown from 'react-markdown'
 
 interface Message {
   id: string
@@ -143,7 +144,18 @@ export default function VoyageEstimatorBot() {
                         : "bg-white text-slate-800 border border-blue-100 rounded-bl-md shadow-sm"
                     }`}
                   >
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
+                    {message.role === "assistant" ? (
+                      <ReactMarkdown
+                        components={{
+                          p: ({node, ...props}) => <p className="whitespace-pre-wrap text-sm leading-relaxed" {...props} />,
+                          strong: ({node, ...props}) => <strong className="font-semibold text-slate-800" {...props} />,
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    ) : (
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
+                    )}
                     <div className={`text-xs mt-2 ${message.role === "user" ? "text-blue-100" : "text-slate-400"}`}>
                       {message.timestamp.toLocaleTimeString([], {
                         hour: "2-digit",
